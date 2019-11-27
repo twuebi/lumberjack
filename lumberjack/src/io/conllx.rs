@@ -57,7 +57,12 @@ impl TryFromConllx for Tree {
                 .as_ref()
                 .map(String::as_str)
                 .ok_or_else(|| format_err!("Ancestor feature missing value."))?;
-            let terminal = Terminal::new(token.form(), token.pos().unwrap_or("_"), idx);
+
+            let mut terminal = Terminal::new(token.form(), token.pos().unwrap_or("_"), idx);
+            if let Some(features) = token.features() {
+                terminal.set_features(Some(crate::Features::from(features.as_str())));
+            }
+
             terminals.push(terminal);
             let mut parts = ancestor.split('~');
             let ancestor = parts
@@ -93,7 +98,14 @@ impl TryFromConllx for Tree {
                 .as_ref()
                 .map(String::as_str)
                 .ok_or_else(|| format_err!("Ancestor feature missing value."))?;
-            let terminal = Terminal::new(token.form(), token.pos().unwrap_or("_"), idx);
+
+            let mut terminal = Terminal::new(token.form(), token.pos().unwrap_or("_"), idx);
+            if let Some(features) = token.features() {
+                terminal.set_features(Some(crate::Features::from(features.as_str())));
+            }
+            let triple = sentence.dep_graph().head(idx + 1).expect(&format!("{:?} {:?} {}",terminal, token, idx));
+            terminal.set_dep_head(Some(triple.head()));
+            terminal.set_dep_head_rel(triple.relation());
             terminals.push(terminal);
             let mut parts = ancestor.split('~');
             let ancestor = parts
@@ -153,6 +165,7 @@ impl From<Tree> for Sentence {
             let mut token = Token::new(terminal.set_form(String::new()));
             let lemma = terminal.set_lemma::<String>(None);
             token.set_lemma(lemma);
+
             token.set_pos(Some(terminal.set_label(String::new())));
             if let Some(morph) = terminal.set_features(None) {
                 token.set_features(Some(Features::from_string(morph.to_string())));

@@ -314,6 +314,8 @@ pub struct Terminal {
     pos: String,
     lemma: Option<String>,
     features: Option<Features>,
+    dep_head: Option<usize>,
+    dep_head_rel: Option<String>,
     span: Span,
 }
 
@@ -341,6 +343,8 @@ impl Terminal {
             pos: pos.into(),
             lemma: None,
             features: None,
+            dep_head: None,
+            dep_head_rel: None,
             span: idx.into(),
         }
     }
@@ -418,6 +422,29 @@ impl Terminal {
         S: Into<String>,
     {
         mem::replace(&mut self.lemma, new_lemma.map(Into::into))
+    }
+
+    /// Return head_rel if present, else `None`.
+    pub fn dep_head_rel(&self) -> Option<&str> {
+        self.dep_head_rel.as_ref().map(String::as_str)
+    }
+
+    /// Replace head_rel with `new_head_rel`. Return old value.
+    pub fn set_dep_head_rel<S>(&mut self, new_head_rel: Option<S>)-> Option<String>
+        where
+            S: Into<String>,
+    {
+        mem::replace(&mut self.dep_head_rel, new_head_rel.map(Into::into))
+    }
+
+    /// Return head_rel if present, else `None`.
+    pub fn dep_head(&self) -> Option<&usize> {
+        self.dep_head.as_ref()
+    }
+
+    /// Replace head_rel with `new_head_rel`. Return old value.
+    pub fn set_dep_head(&mut self, new_head: Option<usize>)-> Option<usize> {
+        mem::replace(&mut self.dep_head, new_head.map(Into::into))
     }
 }
 
