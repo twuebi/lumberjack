@@ -103,7 +103,10 @@ impl TryFromConllx for Tree {
             if let Some(features) = token.features() {
                 terminal.set_features(Some(crate::Features::from(features.as_str())));
             }
-            let triple = sentence.dep_graph().head(idx + 1).expect(&format!("{:?} {:?} {}",terminal, token, idx));
+            let triple = sentence
+                .dep_graph()
+                .head(idx + 1)
+                .expect(&format!("{:?} {:?} {}", terminal, token, idx));
             terminal.set_dep_head(Some(triple.head()));
             terminal.set_dep_head_rel(triple.relation());
             terminals.push(terminal);

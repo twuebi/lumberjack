@@ -430,9 +430,9 @@ impl Terminal {
     }
 
     /// Replace head_rel with `new_head_rel`. Return old value.
-    pub fn set_dep_head_rel<S>(&mut self, new_head_rel: Option<S>)-> Option<String>
-        where
-            S: Into<String>,
+    pub fn set_dep_head_rel<S>(&mut self, new_head_rel: Option<S>) -> Option<String>
+    where
+        S: Into<String>,
     {
         mem::replace(&mut self.dep_head_rel, new_head_rel.map(Into::into))
     }
@@ -443,7 +443,7 @@ impl Terminal {
     }
 
     /// Replace head_rel with `new_head_rel`. Return old value.
-    pub fn set_dep_head(&mut self, new_head: Option<usize>)-> Option<usize> {
+    pub fn set_dep_head(&mut self, new_head: Option<usize>) -> Option<usize> {
         mem::replace(&mut self.dep_head, new_head.map(Into::into))
     }
 }

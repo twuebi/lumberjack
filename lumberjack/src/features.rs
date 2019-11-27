@@ -21,10 +21,9 @@ where
             .split('|')
             .filter(|s| !s.is_empty())
             .map(|f| {
-                let mut parts = f.split(':');
-                let k = parts.next().unwrap();
-                let v = parts.next();
-                (k, v)
+                f.find(':')
+                    .map(|idx| (f[..idx].to_owned(), Some(f[idx + 1..].to_owned())))
+                    .unwrap_or_else(|| (f.to_owned(), None))
             })
             .collect()
     }
